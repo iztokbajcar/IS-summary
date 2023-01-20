@@ -1,0 +1,342 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{multicol}
+
+\author{ib8548}
+\title{IS summary \\
+    \large Summary of the Intelligent Systems course lectures at FRI}
+
+\begin{document}
+\maketitle \newpage
+\tableofcontents \newpage
+
+\section{Nature inspired computing}
+    \subsection{Template of an evolutionary program}
+    \begin{enumerate}
+        \item Generate a population of agents (objects, data structures)
+        \item Repeat:
+            \begin{enumerate}[{2.1}]
+                \item Compute \textbf{fitness} of the agents
+                \item Select \textbf{candidates} for the reproduction (using fitness)
+                \item Create new agents by \textbf{combining} the candidates
+                \item \textbf{Replace} old agents with new ones
+                \item Stop if satisfied
+            \end{enumerate}
+    \end{enumerate}
+
+    \subsection{Key terms}
+    \begin{itemize}
+        \item \textbf{Individual} --- any possible solution
+        \item \textbf{Population} --- a group of all individuals
+        \item \textbf{Search space} --- all possible solutions to the problem
+        \item \textbf{Chromosome} --- a blueprint for an individual
+        \item \textbf{Trait} --- a possible aspect (features) of an individual
+        \item \textbf{Allele} --- possible settings of a trait
+        \item \textbf{Locus} --- the position of a gene on the Chromosome
+        \item \textbf{Genome} --- a collection of all chromosomes for an individual
+    \end{itemize}
+
+    \subsection{Gene representation}
+    \begin{itemize}
+        \item Bit vectors
+        \item Numeric vectors
+        \item Strings
+        \item Permutations
+        \item Trees (representing functions, expressions, programs)
+    \end{itemize}
+
+    \subsection{Linear crossover}
+    Let $\mathbf{x} = (x_1, \ldots, x_N)$ and $\mathbf{y} = (y_1, \ldots, y_N)$. \\
+    Select $\alpha$ in $(0, 1)$. \\
+    The result of the crossover is $\alpha \mathbf{x} + (1 - \alpha) \mathbf{y}$
+
+        \subsubsection{Example}
+        \begin{align*}
+            \alpha &= 0.75 \\
+            A &= (5, 1, 2, 10) \\
+            B &= (2, 8, 4, 5) \\
+        \end{align*}
+
+        Crossover:
+
+        \begin{align*}
+            (\alpha * A_1 + (\alpha - 1) * B_1, \ldots, \alpha * A_4 + (\alpha - 1) * B_4) &= \\
+            = (0.75 * 5 + 0.25 * 2, \ldots, 0.75 * 10 + 0.25 * 5) &= \\
+            = (3.75 + 0.5, 0.75 + 2, 1.5 + 1, 7.5 + 1.25) &= \\
+            = (4.25, 2.75, 2.5, 8.75)
+        \end{align*}
+
+        We can also choose a different $\alpha$ for each position. For example, using $\mathbf{\alpha} = (0.5, 0.25, 0.75, 0.5)$ would result in $(3.5, 6.25, 2.5, 7.5)$.
+
+    \subsection{Gray coding of binary numbers}
+    Each number differs from the previous by \textbf{one bit}. \\
+
+    \begin{multicols*}{2}
+        \begin{tabular}{|c|c|}  % chktex 44
+            \hline  % chktex 44
+            Binary & Gray \\
+            \hline  % chktex 44
+            0000 & \textbf{0000} \\
+            0001 & \textbf{0001} \\
+            0010 & \textbf{0011} \\
+            0011 & \textbf{0010} \\
+            0100 & \textbf{0110} \\
+            0101 & \textbf{0101} \\
+            0110 & \textbf{0100} \\
+            0111 & \textbf{1100} \\
+            1001 & \textbf{1101} \\
+            1010 & \textbf{1111} \\
+            1011 & \textbf{1110} \\
+            1100 & \textbf{1010} \\
+            1101 & \textbf{1011} \\
+            1110 & \textbf{1011} \\
+            1111 & \textbf{1000} \\
+            \hline  % chktex 44
+        \end{tabular} 
+
+        \columnbreak 
+        
+        Constructing a n-bit Gray code recursively (example for $n = 2$):
+        \begin{itemize}
+            \item Create a (n-1) bit list: $\mathbf{0, 1}$
+            \item Reflect: $\mathbf{1, 0}$
+            \item Prefix old entries with $0$: $\mathbf{00, 01}$
+            \item Prefix new entries with $1$: $\mathbf{11, 10}$
+            \item Concatenate: $\mathbf{00, 01, 11, 10}$ 
+        \end{itemize}    
+    \end{multicols*}
+
+    \subsection{Lamarckian mutation}
+    \begin{itemize}
+        \item Searches for the locally best mutation
+    \end{itemize}
+
+    \subsection{Gaussian mutation}
+    \begin{itemize}
+        \item Selects a position in the vector of floats and mutates it by adding a Gaussian error
+    \end{itemize}
+
+    \subsection{Selection}
+    \begin{itemize}
+        \item Proportional
+        \item Rank proportional
+        \item Tournament
+        \item Single Tournament
+        \item Stochastic universal sampling
+    \end{itemize}
+
+        \subsubsection{Proportional (roulette wheel) selection}
+        Each individual gets a share on the ``wheel'' depending on its fitness. Fitter individuals get bigger shares. 
+
+        \subsubsection{Tournament selection}
+        \begin{enumerate}
+            \item Set 
+                $\mathbf{t} = \text{size of the tournament}$,
+                $\mathbf{p} = \text{probability of a choice}$
+            \item Randomly sample $t$ agents from the tournament population
+            \item With probability $p$ select the best agent
+            \item With probability $p(1 - p)$ select the second best agent
+            \item With probability $p{(1-p)}^2$ select the third best agent
+            \item \ldots
+        \end{enumerate}
+
+        \noindent The $\mathbf{n}$\textbf{-th} fittest agent is therefore selected with the probability of $\mathbf{p{(1-p)}^{(n-1)}}$ 
+
+        \subsection{Stochastic universal sampling (SUS)}
+        \begin{itemize}
+            \item \textbf{Unbiased}
+            \item Selecting $N$ agents with combined fitness of $F$
+            \item Randomly chosen first position $r \in [0, \frac{F}{N}]$
+            \item The positions $r + i * \frac{F}{N}; i \in 0, 1, \ldots, N-1$ determine the chosen agents
+        \end{itemize}
+
+        \subsection{Niche specialization}
+        \begin{itemize}
+            \item Punish too similar agents
+        \end{itemize}
+
+        \subsection{Stopping criteria}
+        \begin{itemize}
+            \item Number of generations
+            \item Progress
+            \item Availability of computational resources
+            \item \ldots
+        \end{itemize}
+
+        \subsection{Parameters of genetic algorithms}
+        \begin{itemize}
+            \item Encoding
+            \item Length of the Strings
+            \item Size of the pupolation (from 20--50 to a few thousand)
+            \item Selection method
+            \item Probability of performing a crossover (usually high --- $\sim 0.9$)
+            \item Probability of performing a mutation (usually low --- below $0.1$)
+            \item Termination criteria (usually a number of generations or a target fitness)
+        \end{itemize}
+
+        \subsection{Pros and cons of GA}
+        Pros:
+        \begin{itemize}
+            \item \textbf{Low} time and memory \textbf{requirements} compared to searching a very large feature space
+            \item A solution can be found without any explicit analytical work
+        \end{itemize}
+        Cons:
+        \begin{itemize}
+            \item Randomized and therefore not optimal
+            \item Can get stuck on local maxima
+            \item We have to figure out how to represent candidates with the available methods (e.g.\ as a bit string)
+        \end{itemize}
+    \newpage
+
+\section{Predictive modelling}
+    \subsection{Learning}
+    Acquiring new, modifiying and/or reinforcing existing:
+    \begin{itemize}
+        \item Knowledge
+        \item Behaviors
+        \item Skills
+        \item Values
+        \item Preferences
+    \end{itemize}
+    \textbf{Statistical learning} deals with finding a predictive function based on the data.
+    
+    \subsection{Notation}
+    \begin{align*}
+        X &= \begin{pmatrix}
+            X_1 \\
+            X_2 \\
+            X_3
+        \end{pmatrix} \\
+        Y &= f(X) + \varepsilon \\
+        Y_i &= f(X_i) + \varepsilon
+    \end{align*}
+
+    $\varepsilon$ --- measurement errors, its mean is 0 and it is independent from $X$.
+
+    \subsection{Goals of learning}
+    \begin{itemize}
+        \item Prediction
+        \item Inference
+    \end{itemize}
+
+    \subsection{Prediction}
+    \begin{itemize}
+        \item If we have a good estimate for $f$, we can make accurate predictions for $Y$ based on a new value of $X$.
+    \end{itemize}
+
+    \subsection{Inference}
+    \begin{itemize}
+        \item Finding out the relationship between $Y$ and $X$.
+        \item Sometimes more important than prediction (for example in medicine)
+    \end{itemize}
+
+    \subsection{Parametric methods}
+    \begin{itemize}
+        \item We estimate $f$ by estimating the set of parameters
+    \end{itemize}
+
+    \begin{enumerate}
+        \item Come up with a model based on assumptions about the form of $f$, e.g.\ a linear model: \\
+        \[
+            f(\mathbf{X_i} = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_p X_{ip})
+        \]
+        \begin{itemize}
+            \item More complicated and flexible models for $f$ are often more realistic
+        \end{itemize}
+        \item Use the training data to fit the model (estimate $f$) --- e.g.\ the least squares method in the case of linear models
+    \end{enumerate}
+
+    \subsection{Non-parametric methods}
+    \begin{itemize}
+        \item They do not make assumptions about the funct.\ form of $f$. They fit a wider range of possible shapes, but require a large number of observations compared to parametric methods.
+    \end{itemize}
+
+    \subsection{Types of learning}
+    \begin{itemize}
+        \item Supervised
+        \item Unsupervised
+        \item Semi-Supervised
+        \item Self-Supervised
+        \item Weakly-supervised
+    \end{itemize}
+
+        \subsubsection{Supervised learning}
+        Both the predictors ($X_i$) and the response ($Y_i$) are given.
+
+        \subsubsection{Unsupervised learning}
+        We don't know $Y$ --- we are looking for similarities between attributes ($X$).
+
+        \subsubsection{Semi-supervised learning}
+        Only a small sample of labelled instances is observed, but a large set of instances is unlabelled.
+        \begin{itemize}
+            \item A supervised model is used to label unlabelled instances
+            \item The most reliable predictions are then added to the training set for the next iteration of supervised learning
+        \end{itemize}
+
+        \subsubsection{Self-supervised learning}
+        \begin{itemize}
+            \item A mixture of supervised and unsupervised learning
+            \item Learns from unlabelled data
+            \item The labels are obtained \textbf{from related properties of the data}
+        \end{itemize}
+
+        Examples: 
+        \begin{itemize}
+            \item in NLP: predicting hidden words in a sentence based on the remaining words
+            \item in video processing: predicting past or future frames from the observed ones
+        \end{itemize}
+
+        \subsubsection{Weakly-supervised data}
+        Using imprecise or noisy sources to supervise labelling large amounts of training data, then performing supervised learning. \\
+        Example: using a smart electricity meter to estimate household occupancy
+    
+    \subsection{Criteria of success for machine learning}
+    How to select the best model? Most popular criterions:
+    \begin{itemize}
+        \item For \textbf{regression}: mean squared error (MSE)
+        \[
+            MSE = \frac{1}{n} \sum_{i=1}^{n} {(y_i - f'(x_i))}^2
+        \]
+        \item For \textbf{classification}: classification accuracy (CA)
+        \[
+            CA = \frac{1}{n} \sum_{i=1}^{n} I(y_i = y'_i)
+        \]
+    \end{itemize}
+
+    \subsection{No free lunch theorem}
+    If no information about $f(X)$ is provided:
+    \begin{itemize}
+        \item No classifier is better than some other in the general case
+        \item No classifier is better than random in the general case
+    \end{itemize}
+
+    \newpage
+
+\section{Bias, variance and predictive models}
+    \newpage
+
+\section{Feature selection}
+    \newpage
+
+\section{Ensemble methods}
+    \newpage
+
+\section{Kernel methods}
+    \newpage
+
+\section{Neural networks}
+    \newpage
+
+\section{Inference and explanation}
+    \newpage
+
+\section{Natural language processing}
+    \newpage
+
+\section{Reinforcement learning}
+    \newpage
+
+\end{document}
