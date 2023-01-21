@@ -316,12 +316,341 @@
     \newpage
 
 \section{Bias, variance and predictive models}
+    \subsection{Bias}
+    \begin{itemize}
+        \item It is the error that is introduced by modelling a (usually very complicated) real life problem by a much simpler problem.
+        \item Example: linear regression assumes a linear relationship between $Y$ and $X$; in reality that is unlikely to happen.
+        \item Generally, the \textbf{more flexible/complex} a method is, the \textbf{less} bias it will have.
+    \end{itemize}
+
+    \subsection{Variance}
+    \begin{itemize}
+        \item Refers to how much our estimate for $f$ would change if we had a different training data set
+        \item Generally, the \textbf{more flexible} a method is, the \textbf{more} variance it has.
+    \end{itemize}
+
+    \subsection{Bayes error rate}
+    \begin{itemize}
+        \item Refers to the lowest possible error rate that could be achieved (if we knew the true probability distribution)
+        \item On test data, no classifier can get lower error rates than this
+        \item It can't be calculated exactly in real-life problems
+    \end{itemize}
+
+    \subsection{Bayes optimal classifier}
+    \begin{itemize}
+        \item For a new $x_0$, returns the maximally probable prediction value \\ $P(Y=y \vert X=x_0)$
+        \item In classification: $argmax_j P(Y=y_j \vert X=x_0)$
+    \end{itemize}
+
+    \subsection{k-Nearest Neighbors (KNN)}
+    \begin{itemize}
+        \item For any given $X$ we find the closest $k$ neighbors in the training data and examine their corresponding $Y$
+        \item The \textbf{smaller} $k$, the \textbf{more flexible} the method will be
+    \end{itemize}
+
+    \subsection{k-NN classifier}
+        \subsubsection{For classification}
+        \begin{itemize}
+            \item $P(Y = j \vert X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_i = j)$
+        \end{itemize}
+
+        \subsubsection{For regression}
+        \begin{itemize}
+            \item $f(x) = \frac{1}{k} \sum_{x_i \in N_i} y_i$
+        \end{itemize}
+
+    \subsection{Types of bias}
+    \begin{itemize}
+        \item Reporting bias
+        \item Automation bias
+        \item Selection bias
+        \item Group attribution bias
+        \item Implicit bias
+    \end{itemize}
+
+        \subsubsection{Reporting bias}
+        \begin{itemize}
+            \item When the frequency of events does not accurately reflect their real-world frequency
+            \item Because people tend to focus on documenting unusual or especially memorable circumstances
+        \end{itemize}
+        \textit{Example:} The majority of book reviews are extreme opinions (very positive or very negative), because people were more inclined to giving a review if they had a strong opinion of the book
+
+        \subsubsection{Automation bias}
+        \begin{itemize}
+            \item The tendency to prefer automated systems over non-automated ones
+        \end{itemize}
+        \textit{Example:} Engineers develop a new model for identifying product defects to relieve the burden off inspectors, but its results are found out to be worse than those of human inspectors
+
+        \subsubsection{Selection bias}
+        \begin{itemize}
+            \item Occurs if the dataset's examples are chosen irrepresentatively
+        \end{itemize}
+
+        \subsubsection{Group attribution bias}
+        \begin{itemize}
+            \item Generalizing properties of individuals to the entire group they belong to
+            \begin{itemize}
+                \item In-group bias: you \textbf{also belong} to the group \\
+                \textit{Example:} Presuming that people who study at FRI are better at computer science than students of other computer science faculties 
+                \item Out-group bias: you \textbf{don't belong} to the group \\
+                \textit{Example:} Making the presumption that people who did not attend a computer science academy do not have sufficient expertise in the field
+            \end{itemize} 
+        \end{itemize}
+
+        \subsubsection{Implicit bias}
+        \begin{itemize}
+            \item Occurs when assumptions are made based on an individual's mental models and personal experiences that do not apply more generally
+        \end{itemize}
+
     \newpage
 
 \section{Feature selection}
+    \subsection{Types of feature selection methods}
+    \begin{itemize}
+        \item \textbf{Filter methods:} independent of the learning algorithm, selecting the most discriminative features based on the character of data (information gain, ReliefF)
+        \item \textbf{Wrapper methods:} using the intended learning algorithm to evaluate the features (e.g.\ progressively adding features while performance increases)
+        \item \textbf{Embedded methods:} selecting features during the process of learning
+    \end{itemize}
+
+    \subsection{Heuristic measures for attribute evaluation}
+    \begin{itemize}
+        \item Impurity based --- assuming conditional independence between the attributes
+        \begin{itemize}
+            \item Information theory based (information gain, gain ratio, distance measure, J-measure)
+            \item Probability based (Gini index, DKM, classification error)
+            \item MDL
+            \item G, $\aleph^2$
+            \item Mean squared error (MSE), mean absolute error (MAE)
+        \end{itemize}
+        \item Context-sensitive measures --- affinity graph based
+        \begin{itemize}
+            \item Relief, Contextual Merit
+            \item Random forests or boosting based evaluation
+        \end{itemize}
+    \end{itemize}
+
+        \subsubsection{Information gain}
+        \[ I(\tau) = - \sum_{i=1}^{c} p(\tau_i) \log_2 p(\tau_i) \]
+        \[ I(\tau \vert A) = - \sum_{j=1}^{v_A} p(v_j) \sum_{i=1}^{c} p(\tau_i \vert v_j) \log_2 p(\tau_i \vert v_j) \]
+        \[ IG(A) = I(\tau) - I(\tau \vert A) \]
+        Measures the purity of labels before and after the split, with each attribute evaluated independently from the others.
+
+        \subsubsection{Relief algorithms}
+        \begin{itemize}
+            \item Criterion: evaluate attributes according to their power of separation between near instances
+            \item Values of a good atribute should:
+            \begin{itemize}
+                \item \textbf{Distinguish} between near instances from \textbf{different} class
+                \item Have \textbf{similar} values to near instances from the \textbf{same} class
+            \end{itemize}
+            \item These algorithms take no assumptions about conditional independence, but are reliable also in problems with strong conditional dependencies
+            \item Extension: \textbf{ReliefF}
+            \begin{itemize}
+                \item Multi-class problems
+                \item Incomplete and noisy data
+                \item Robust
+            \end{itemize}
+        \end{itemize}
+
+    \subsection{Ridge regression}
+    \begin{itemize}
+        \item Ordinary Least Squares (OLS) minimizes:
+        \[ RSS = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij} \right) \]
+        \item Ridge regression uses a slightly different equation --- it minimizes the following expression:
+        \[ RSS + \lambda \sum_{j=1}^{p} \beta_j^2 \]
+        \item This has the effect of ``shrinking'' large values of $\beta$s towards zero (we added a penalty term to the OLS equation)
+        \item The penalty term \textbf{introduces bias} but can substantially \textbf{reduce variance} --- there is a bias/variance tradeoff
+    \end{itemize}
+
+    \subsection{The LASSO method}
+    \begin{itemize}
+        \item Because the penalty term in ridge regression will never force any of the coefficients to be zero, using ridge regression wil cause the final model to include all variables, which makes it hard to interpret
+        \item LASSO fixes this problem by using a different penalty term:
+        \[ RSS + \lambda \sum_{j=1}^{p} |\beta_j| \]
+        \item Using LASSO therefore enables us to produce a model that has high predictive power, but is simple to interpret
+    \end{itemize}
+
+    \subsection{Wrapper approach}
+    \begin{enumerate}
+        \item Start with an empty set of features $S= \emptyset$
+        \item Repeat until all features are added to $S$:
+        \begin{enumerate}[{2.1}]
+            \item Add all unused features one by one to $S$
+            \item Train a prediction model with each set $S$
+            \item Evaluate each prediction model
+            \item Keep the best added feature in $S$
+        \end{enumerate}
+        \item Return the best set of features encountered
+    \end{enumerate}
+
+    \subsection{Confusion matrix}
+    \begin{tabular}{|c|c c|c|}  % chktex 44
+        \hline  % chktex 44
+        A $\backslash$ P & $C$ & $\neg{C}$ & \\
+        \hline   % chktex 44
+        $C$ & \textbf{TP} & \textbf{FN} & \textbf{P} \\
+        $\neg{C}$ & \textbf{FP} & \textbf{TN} & \textbf{N} \\
+        \hline  % chktex 44
+        & \textbf{P'} & \textbf{N'} & All \\
+        \hline  % chktex 44
+    \end{tabular}
+
+    \subsection{Model evaluation metrics}
+    \begin{itemize}
+        \item Regression: MSE, MAE
+        \item Classification: accuracy, sensitivity, specificity, AUC, precision, recall
+    \end{itemize}
+
+        \subsubsection{Classification accuracy}
+        \[ \text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{All}} \]
+        The ratio of test set tuples that are correctly classified.
+
+        \subsubsection{Sensitivity and specificity}
+        \textbf{Sensitivity:} True Positive recognition rate
+        \[ \text{Sensitivity} = \frac{\text{TP}}{\text{P}} \]
+        \textbf{Specificity:} True Negative recognition rate
+        \[ \text{Sensitivity} = \frac{\text{TN}}{\text{N}} \]
+
+        \subsubsection{Precision and recall}
+        \textbf{Precision:} \textit{exactness} --- what percentage of positively classified tuples are actually positive
+        \[ \text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}} \]
+        \textbf{Recall:} \textit{completeness} --- what percentage of positive tuples the classifier labelled as positive
+        \[ \text{Recall} = \frac{\text {TP}}{\text{TP} + \text{FN}} \]
+        There is an inverse relationship between precision and recall, the perfect score is 1.0
+
+        \subsubsection{F-measures}
+        \textbf{F-measure ($F_1$ or F-score):} a harmonic mean of precision and recall
+        \[ F = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} \]
+        $\mathbf{F_\beta}\textbf{:}$ a weighted measure of precision and recall (assigns $\beta$ times as much weight to recall as to precision)
+        \[ F_\beta = \frac{(1 + \beta^2) \times \text{Precision} \times \text{Recall}}{\beta^2 \times \text{Precision} + \text{Recall}} \]
+
+        \subsubsection{ROC curve}
+        \begin{itemize}
+            \item Shows both TP rate and FP rate simultaneously
+            \item To summarize overall performance, we also use \textit{area under the ROC curve} (AOC)
+            \item The larger the AUC, the better the classifier
+        \end{itemize}
+
+    \subsection{Unsupervised feature selection}
+    \begin{itemize}
+        \item Criterion: preserve similarity between instances
+        \item SPEC:\@ spectral feature selection
+    \end{itemize}
+
     \newpage
 
 \section{Ensemble methods}
+    \begin{itemize}
+        \item Learn a large number of basic (simple) classifiers
+        \item Merge their predictions
+    \end{itemize}
+
+    The most successful methods:
+    \begin{itemize}
+        \item Bagging
+        \item Boosting
+        \item Random forest
+    \end{itemize}
+
+        \subsection{Bagging}
+        \begin{itemize}
+            \item \textbf{B}ootstrap \textbf{agg}regat\textbf{ing}
+            \item Solves the problem of decision trees suffering from high variance
+            \item Based on:
+            \begin{itemize}
+                \item Averaging --- reduces variance
+                \item Bootstrapping --- plenty of training datasets
+            \end{itemize}
+            \item Procedure:
+            \begin{enumerate}
+                \item Generate $B$ different bootstrapped training datasets
+                \item Train the statistical learning method on each of the $B$ training \\ datasets and obtain the prediction
+            \end{enumerate}
+        \end{itemize}
+
+            \subsubsection{Bootstrapping}
+            \begin{itemize}
+                \item Resampling of the observed dataset (each dataset is of equal size to the observed dataset)
+                \item Draw instances from a dataset \textbf{with replacement} (tuples may repeat)
+            \end{itemize}
+
+            \subsubsection{Bagging for regression trees}
+            \begin{enumerate}
+                \item Construct $B$ regression trees using $B$ bootstrapped training datasets
+                \item Average the resulting predictions
+            \end{enumerate}
+            Averaging these trees reduces variance, thus we end up lowering both variance and bias
+
+            \subsubsection{Bagging for classification trees}
+            \begin{enumerate}
+                \item Construct $B$ decision trees using $B$ bootstrapped training datasets
+                \item For prediction, there are two approaches:
+                \begin{itemize}
+                    \item \textbf{Majority vote:} record the class that each bootstrapped data set predicts and provide an overall prediction to the most commonly occurring one
+                    \item Average the probabilities and then predict to the class with the highest priority
+                \end{itemize}
+            \end{enumerate}
+
+        \subsection{Random forests}
+        \begin{itemize}
+            \item A very efficient statistical learning method
+            \item Builds on the idea of bagging, but provides an improvement by \\ de-correlating the trees
+        \end{itemize}
+
+        \begin{enumerate}
+            \item Build a number of decision trees on bootstrapped training sample
+            \item When building these trees, each time a split in a tree is considered, a random sample of $m$ predictors is chosen as split candidates from the full set of $p$ predictors
+        \end{enumerate}
+
+        Properties:
+        \begin{itemize}
+            \item Low classification/regression error
+            \item No overfitting
+            \item Robust
+            \item Relatively fast
+            \item Instances that are not selected with bootstrap replication are used for the evaluation of the tree (\textbf{OOB --- Out-Of-Bag evaluation})
+        \end{itemize}
+
+        \subsection{Out-of-bag evaluation}
+        \begin{itemize}
+            \item On average, $\sim 37\%$ of the learning set is not used to train each of the basic classifiers
+        \end{itemize}
+
+        \subsection{Boosting}
+        \begin{itemize}
+            \item Grows the tree sequentially: each added tree uses information about errors of previous trees
+        \end{itemize}
+
+        \subsection{Weighting of the trees}
+        \begin{itemize}
+            \item Not all trees are equally important
+            \item Weight the trees according to the data
+            \item Assume linear combination of base coefficients
+        \end{itemize}
+
+        \subsection{MARS --- Multivariate Adaptive Regression Splines}
+        \begin{itemize}
+            \item Generalization of stepwise linear regression
+            \item Modification of trees to improve regression performance
+            \item Able to capture additive structures
+            \item Not tree-based
+            \item Set $C$ represents a candidate set of linear splines with ``knees'' at each data point $X_i$
+            \item Models are built with elements from $C$ or their products
+            \[ C = {\{{(X_j - t)}_+, {(t - X_j)}_+ \}}_{t \ni} x_{1j}, x_{2j}, \ldots, x_{Nj}, j = 1, 2, \ldots, p \]
+            \item Model form:
+            \[ f(X) = \beta_0 + \sum_{m=1}^{M} \beta_m h_m(X) \]
+        \end{itemize}
+
+        Procedure:
+        \begin{enumerate}
+            \item Given a choice for the $h_m$, the coefficients $\beta$ are chosen by the standard linear regression
+            \item Start with $h_0(X) = 1$; all functions in $C$ are candidate functions
+            \item At each stage, consider as a new basis function pair all products of a function $h_m$ in the model set $M$, with one of the reflected pairs in $C$
+            \[ \beta_{M+1} h_l(X) * {(X_j - t)}_+ + \beta_{M+2} h_l(X) * {(t - X_j)}_+, h_l \in M \]
+            \item We add to the model terms of the form: 
+            \[ h_m(X) * {(t - X_j)}_+ \qquad h_m(X) * {(X_j - t)}_+ \]
+        \end{enumerate}
+
     \newpage
 
 \section{Kernel methods}
