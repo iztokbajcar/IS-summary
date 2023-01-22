@@ -654,9 +654,178 @@
     \newpage
 
 \section{Kernel methods}
+    \subsection{Support vector machines}
+    \begin{itemize}
+        \item Idea: finding a hyperplane that gives the biggest separation between the classes
+        \item In practice, it is usually not possible to find a hyperplane that perfectly separates two classes
+        \item We try to find the best separation
+    \end{itemize}
+
+        \subsubsection{Non-linear support vector classifier}
+        \[ Y_i = \beta_0 + \beta1 b_1 (X_i) + \beta_2 b_2 (X_i) + \cdots + \beta_p b_p (X_i) + \varepsilon_i \]
+
+        \subsubsection{Example}
+        \begin{itemize}
+            \item Suppose we use polynomials as bases
+            \[ X_1,\; X_2,\; X_1^2,\; X_2^2,\; X_1 X_2,\; X_1^3,\; X_1 X_2^2,\; \ldots \]
+            \item We go from $p$-dimensional space to $M > p$-dimensional space and fit the SVM classifier in the enlarged space
+            \item For the bases $(X_1,\; X_2,\; X_1^2,\; X_2^2,\; X_1 X_2)$, this gives a non-linear classifier in the original space
+            \[ \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1^2 + \beta_4 X_2^2 + \beta_5 X_1 X_2 = 0 \]
+        \end{itemize}
+
+        \subsubsection{Common kernel functions}
+        Instead of choosing the basis, we use a kernel function.
+        Common kernel functions include:
+        \begin{itemize}
+            \item Linear
+            \item Polynomials
+            \item Radial basis
+            \item Sigmoid
+        \end{itemize}
+
+        \subsubsection{SVM for more than one class}
+        \begin{itemize}
+            \item OVA --- One versus All
+            \begin{itemize}
+                \item Fit $K$ different 2-class SVM classifiers, each class versus the rest
+                \item Classify new $x$ to the class for which the value of the kernel function is the largest.
+            \end{itemize}
+
+            \item OVO --- One versus One
+            \begin{itemize}
+                \item Fit all $\binom{K}{2}$ pairwise classifiers
+                \item Classify new $x$ ti the class that wins the most pairwise competitions
+            \end{itemize}
+
+            \item If $K$ is not too large, use OVO
+        \end{itemize}
+
     \newpage
 
 \section{Neural networks}
+    \subsection{Neuron}
+    \begin{itemize}
+        \item Computational units
+        \item Passing messages (information) in the network
+        \item Typically organized into layers
+    \end{itemize}
+
+    \subsection{Activation functions}
+    \begin{itemize}
+        \item Step function: $f(x) = \begin{cases}
+            1, & x > 0 \\
+            0, & x \leq 0
+        \end{cases}$
+        \item Sigmoid (logistic) function: $f(x) = \frac{1}{1 + e^{-x}}$
+        \item ReLU (rectified linear unit): $f(x) = \max(0, x)$
+        \item Softplus / approximation of ReLU with \\ continuous derivation: $f(x) = \ln(1 + e^x)$
+        \item ELU (Exponential Linear Unit): $ELU(x) = \begin{cases}
+            c * (e^x - 1) & \text{for } x < 0 \\
+            x & \text{for } x \geq 0
+        \end{cases}$
+    \end{itemize}
+
+    \subsection{Multi-layeres NNs}
+    \begin{enumerate}
+        \item The \textbf{inputs} to the network correspond to the attributes measured for each training tuple
+        \item Inputs are fed simultaneously into the units making up the \textbf{input layer}
+        \item They are then \textbf{weighted} and fed simultaneously to a \textbf{hidden layer}
+        \item The number of hidden layers is arbitrary; if more than 1 hidden layer is used, the network is called a \textbf{deep neural network}
+        \item The weighted outputs of the last hidden layer are inputs to units making up the \textbf{output layer},  which emits the network's prediction
+        \item The network is \textbf{feed-forward}: none of the weights cycle back to an input unit or to an output unit of a previous layer
+        \item If we have backwards connections, the network is called a \textbf{recurrent neural network}
+        \item From a stytistical point of view, networks perform \textbf{non-linear regression}: given enough hidden units and enough training samples, they can closely approximate any function
+    \end{enumerate}
+
+    \subsection{Backpropagation learning algorithm for NN}
+    \begin{itemize}
+        \item Backpropagation: a neural network learning algorithm
+        \item Started by psychologists and neurobiologists to develop and test computational analogues of neurons
+        \item During the learning phase, the network learns by adjusting the weights so as to be able to predict the correct class label of the input tuples
+        \item Also referred to as \textbf{connectionist learning} due to the connections between units
+    \end{itemize}
+    
+    \subsection{Softmax}
+    \begin{itemize}
+        \item Normalizes the output scores to be a probability distribution (values between 0 and 1, the sum is 1)
+        \[ y_i = \frac{e^{z_i}}{\sum_{j \in \text{group}} e^{z_j}} \]
+        \[ \frac{\partial y_i}{\partial z_i} = y_i (1 - y_i) \]
+    \end{itemize}
+
+    \subsection{Criterion function}
+    \begin{itemize}
+        \item Together with softmax we frequently use cross entropy as the cost function $C$
+        \[ C = - \sum_j t_j \log y_j \]
+        \[ \frac{\partial C}{\partial z_i} = \sum_j \frac{\partial C}{\partial y_j} \frac{\partial y_j}{\partial z_i} = y_i - t_i \]
+    \end{itemize}
+
+    \subsection{Backpropagation}
+    \begin{itemize}
+        \item Iteratively process a set of training tuples and compare the network's prediction with the actual known target value
+        \item For each training tuple, the weights are modified to \textbf{minimize the mean squared error} between the network's prediction and the actual target value
+        \item Modifications are made in the ``\textbf{backwards}'' direction: from the output layer, through each hidden layer down to the first hidden layer (hence ``backpropagation'')
+        \item Steps:
+        \begin{enumerate}
+            \item Initialize weights to small random numbers, associated with biases
+            \item Propagate the inputs forward (by applying activation function)
+            \item Backpropagate the error (by updating weights and biases)
+            \item Terminating condition: when the error is very small, etc.
+        \end{enumerate}
+    \end{itemize}
+
+    \subsection{Error backpropagation}
+    \begin{itemize}
+        \item Performing gradient descent on the whole network
+        \item Training will procees from the last layer to the first
+        \item introduce variables over the neura network
+        \[ \vec{\theta} = \{w_{ij}, w_{jk}, w_{kl}\} \]
+        \begin{itemize}
+            \item Distinguish the input and output of each node
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{Autoencoders}
+    \begin{itemize}
+        \item Designed to reproduce their input, especially for images
+        \item The key point is to reproduce the input from a learned encoding
+        \item The loss function is the reproduction error
+    \end{itemize}
+
+        \subsubsection{Structure}
+        \begin{itemize}
+            \item \textbf{Encoder:} compresses input into a latent-space of usually smaller dimension. $h = f(x)$
+            \item \textbf{Decoder:} reconstructs input from the latent space. $r = g(f(x))$ with $r$ as close to $x$ as possible
+        \end{itemize}
+
+        \subsubsection{Denoising autoencoders}
+        \begin{itemize}
+            \item Basic autoencoders train to minimize the loss between $x$ and the reconstruction, $g(f(x))$
+            \item Denoising autoencoders train to minimize the loss between $x$ and $g(f(x+w))$, where $w$ is random noise
+            \item Same possible architectures, different training data
+        \end{itemize}
+
+        \subsubsection{Properties of autoencoders}
+        \begin{itemize}
+            \item \textbf{Data-specific:} autoencoders are only able to compress data similar to what they have been trained on
+            \item \textbf{Lossy:} the decompressed outputs will be degraded compared to the original inputs
+            \item \textbf{Learned automatically from examples:} It is easy to train specialized instances of the algorithm that will perform well on a specific type of input
+        \end{itemize}
+
+        \subsection{Generative Adversarial Networks (GANs)}
+        \begin{itemize}
+            \item Learn a generative model
+            \item Are trained in an adversarial setting
+            \item Use deep neural networks
+        \end{itemize}
+
+        \subsection{Adversarial training}
+        \begin{itemize}
+            \item \textbf{Generator:} generates fake samples and tries to fool the discriminator
+            \item \textbf{Discriminator:} tries to distinguish between real and fake samples
+            \item We train them against each other
+            \item By repeating the training process, the generator and discriminator improve
+        \end{itemize}
+
     \newpage
 
 \section{Inference and explanation}
