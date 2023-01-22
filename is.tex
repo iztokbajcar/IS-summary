@@ -828,7 +828,135 @@
 
     \newpage
 
-\section{Inference and explanation}
+\section{Inference and explanation of prediction models}
+    \subsection{Visualization}
+    \begin{itemize}
+        \item Helps us understand the data we are working with
+        \item Due to limitations of human visual perception, we often see what we want to see, therefore it is useful to use visualizations which expose ``the unknown''
+    \end{itemize}
+
+    \subsection{Explanation of predictions}
+    \begin{itemize}
+        \item A number of successful prediction algorithms exist (SVM, boosting, random forests, neural networks), but they are a \textbf{black box} to the user
+        \item There are many fields where users are concerned about the transparency of the models (medicine, law, consultancy, \ldots)
+    \end{itemize}
+
+    \subsection{Domain level explanation}
+    \begin{itemize}
+        \item Trying to explain the ``true causes and effects''
+        \item Usually unreachable
+        \item Some aspects are covered with attribute evaluation, detection of redundancies, \ldots
+        \item Targeted indirectly through models
+    \end{itemize}
+
+    \subsection{Model-based explanations}
+    \begin{itemize}
+        \item They make the prediction process of a particular problem transparent
+        \item The explanation correctness is independent of the correctness of the prediction
+        \item Better models enable (in principle) better explanations at the domain level
+        \item We are mostly interested only in the explanation at the model level
+    \end{itemize}
+
+    \subsection{Types of explanation techniques}
+    \begin{itemize}
+        \item Model-specific
+        \begin{itemize}
+            \item Especially used for deep neural networks
+        \end{itemize}
+        \item Model-agnostic
+        \begin{itemize}
+            \item Can be used for any predictor
+            \item Based on perturbation of the inputs
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{Perturbation-based explanations}
+    \begin{itemize}
+        \item Importance of a feature or a group of features in a specific mode can be estimated by simulating lack of knowledge about the values of the feature(s)  % chktex 36
+    \end{itemize}
+
+    \subsection{Instance-level explanations}
+    \begin{itemize}
+        \item They explain prediction for each instance separately
+        \begin{itemize}
+            \item This is what \textbf{practitioners} applying the models are interested in
+        \end{itemize}
+        \item Model-based
+    \end{itemize}
+
+    \subsection{Model-level explanations}
+    \begin{itemize}
+        \item They show the overall picture of a problem the model conveys
+        \begin{itemize}
+            \item This is what \textbf{knowledge extractors} are interested in
+        \end{itemize}
+        \item Model-based
+    \end{itemize}
+
+    \subsection{The EXPLAIN method}
+    \begin{itemize}
+        \item ``Hide'' one attribute at a time
+        \item Estimate the contribution of the attribute:
+        \[ p(y_k \vert x) - p_{S \backslash \{i\}}  (y_k \vert x) \]
+        \item Assume an instance $(\mathbf{x}, y)$, where components of $\mathbf{x}$ are values of attribute $A_i$
+        \item For a new instance $\mathbf{x}$, we want to know what role each attribute's value plays in the prediction model $f$
+        \item For that purpose,
+        \begin{itemize}
+            \item We compute $f(\mathbf{x} \backslash A_i)$, the model's prediction for $\mathbf{x}$ without the knowledge of the event $A_i = a_k$ (marginal prediction)
+            \item We compare $f(\mathbf{x})$ and $f(\mathbf{x} \backslash A_i)$ to assess the importance of $A_i = a_k$
+            \item The larger the difference, the more important the role of $A_i = a_k$ in the model
+        \end{itemize}
+        \item $f(\mathbf{x})$ and $f(\mathbf{x} \backslash A_i)$ are the source of explanations
+    \end{itemize}
+
+    \subsection{Evaluation of prediction differences}
+    \begin{enumerate}
+        \item Difference of probabilities
+        \[ \text{probDiff}_i(y \vert \mathbf{x}) = p(y \vert \mathbf{x}) - p(y \vert \mathbf{x} \backslash A_i) \]
+        \item Information gain
+        \[ \text{infGain}_i(y \vert \mathbf{x}) = \log_2 p(y \vert \mathbf{x}) - \log_2 p (y \vert \mathbf{x} \backslash A_i)\]
+        \item Weight of evidence (also log odds ratio)
+        \[ odds(z) = \frac{p(z)}{1 - p(z)} \]
+        \[ WE_i(y \vert \mathbf{x}) = \log_2 odds(y \vert \mathbf{x}) - \log_2 odds(y \vert \mathbf{x} \backslash A_i) \] 
+    \end{enumerate}
+
+        \subsubsection{Implementation}
+        \begin{itemize}
+            \item $p(y \vert \mathbf{x})$: classify $\mathbf{x}$ with the model
+            \item $p(y \vert \mathbf{x} \backslash A_i)$: simulate lack of knowledge of $A_i$ in the model
+            \begin{itemize}
+                \item Replace with special NA value: good for some, but mostly bad
+                \item Average prediction across perturbations of $A_i$
+                \[ p(y \vert \mathbf{x} \backslash A_i) = \sum_a p(A_i = a_s) p(y \vert \mathbf{x} \leftarrow A_i = a_s) \]
+                \item Use discretization for numeric attributes
+                \item Use Laplace correction for probability estimation
+            \end{itemize}
+        \end{itemize}
+
+    \subsection{The IME method}
+    \begin{itemize}
+        \item Interactions-based Method for Explanation
+        \item ``Hide' any subset of attributes at a time ($2^a$ subsets!)
+        \item The \textbf{source of explanations} is the difference in prediction using a subset of features $Q$ and an empty set of features $\emptyset$
+        \[ \Delta Q = h(x_Q) - h(x_\emptyset) \]
+        \item The feature gets some credit for standalone contributions and for contributions in interactions
+    \end{itemize}
+
+    \subsection{The LIME explanation method}
+    \begin{itemize}
+        \item Optimize a trade-off between local fidelity of explanation and its interpretability
+        \item LIME samples around the explanation instance $x$ to draw samples $z$ weighted by the distance $\pi(x, z)$
+        \item Samples $z$ are used to train an interpretable model $g$ (linear model)
+        \item Faster than IME
+    \end{itemize}
+
+    \subsection{The SHAP method}
+    \begin{itemize}
+        \item SHapley Additive exPlanation
+        \item Unification of several explanation methods, including IME and LIME
+        \item Faster than IME, but still uses a linear model with all its strengths and weaknesses
+    \end{itemize}
+
     \newpage
 
 \section{Natural language processing}
