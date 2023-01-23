@@ -960,6 +960,270 @@
     \newpage
 
 \section{Natural language processing}
+    \subsection{Uses}
+    \begin{itemize}
+        \item Speech recognition and synthesis
+        \item Automatic reply Engineers
+        \item Machine translation
+        \item Text summarization
+        \item Question answering
+        \item Language generations
+        \item Interface to databases
+        \item Intelligent search and information extraction
+        \item Sentiment detection
+        \item Semantic analysis
+        \item Named entity recognition and linking
+        \item Categorization, classification of documents, messages, etc.
+        \item Many tools and language resources
+        \item Prevalence of deep neural network approaches
+        \item Cross-lingual approaches
+    \end{itemize}
+
+    \subsection{Linguistic analysis}
+    \begin{itemize}
+        \item \textbf{Prosody} --- the patterns of stress and intonation in a language
+        \item \textbf{Phonology} --- systems of sounds and relationships among the speech souds that constitute the fundamental components of a language
+        \item \textbf{Morphology} --- the admissin+ble arrangements of sounds in words; how to form words, prefixes and suffixes\ldots
+        \item \textbf{Syntax} --- the arrangement of words and phrases to reate well-formed sentences in a language
+        \item \textbf{Semantics} --- the meaning of a word, phrase, sentence or text
+        \item \textbf{Pragmatics} --- language in use and the contexts in which it is used, taking turns in conversation, text organization, presupposition and implicature
+        \item Knowing the world: knowledge of the physical word, humans, society, intentions in communications\ldots
+    \end{itemize}
+
+    \subsection{The classic approach}
+    \begin{enumerate}
+        \setcounter{enumi}{-1}
+        \item Text preprocessing
+        \item Syntactic analysis
+        \item Semantic interpretation
+        \item Use of world knowledge
+    \end{enumerate}
+
+    \subsection{Lemmatization and stemming}
+    \begin{itemize}
+        \item \textbf{Lemmatization:} the process of grouping together the different forms of a word into a single item
+        \item The stemmer operates on a single word without knowledge of its context
+        \item Lemmatization difficulty is language dependent
+        \item Usage of rules and dictionaries
+    \end{itemize}
+
+    \subsection{Part of speech (POS) tagging}
+    \begin{itemize}
+        \item Assigning the correct part of speech (noun, verb, \ldots) to words
+        \item Helps recognize phrases and names
+        \item Uses rues and machine learning models
+    \end{itemize}
+
+    \subsection{Named entity recognition (NER)}
+    \begin{itemize}
+        \item Recognizing named entities, such as names of organizations (e.g.\ NATO), people (e.g.\ Jens Stoltenberg), countries \ldots
+        \item Named entity linking (NEL) links same words with different meaning (e.g.\ jaguar, Paris) to an unique identifier (wikification)
+    \end{itemize}
+
+    \subsection{Syntax analysis}
+    \begin{itemize}
+        \item \textbf{The 1.\ phase of text understanding}
+        \item POS tagging
+        \item Determining the words' roles in the sentence (subject, object, predicate)
+        \item The result is mostly presented in a form of a parse tree
+        \item Syntax, morphology and some semantics are needed
+    \end{itemize}
+
+    \subsection{n-gram tagging}
+    \begin{itemize}
+        \item Contect of $n-1$ preceding words
+        \item Corpus-based learning
+        \item Markov models, HMM, learning with EM
+        \[ t_i = \arg\max_j P(t^{(j)} \vert t_{i-1}) * P(w_i \vert t^{(j)}) \]
+    \end{itemize}
+
+    \subsection{Grammars}
+    \begin{itemize}
+        \item Many tools, e.g.\ NLTK
+        \item Ambiguity, several parsing trees
+    \end{itemize}
+
+    \subsection{Interpretation}
+    \begin{itemize}
+        \item \textbf{The 2.\ phase of text understanding}
+        \item Knowledge of word meaning and their language use
+        \item Result: conceptual graphs, frames, logical program
+        \item Check semantics
+    \end{itemize}
+
+    \subsection{Use of world knowledge}
+    \begin{itemize}
+        \item \textbf{The 3.\ phase of text understanding}
+    \end{itemize}
+
+    \subsection{Document retrieval}
+    \begin{itemize}
+        \item Historical: keywords
+        \item Now: whole text search
+        \item Organize a database, indexing, search algorithms
+        \item Input: a query
+    \end{itemize}
+
+    \subsection{Document indexing}
+    \begin{itemize}
+        \item Collect all words from all documents \textbf{(use lemmatization)}
+        \item Inverted file
+        \item For each word keep:
+        \begin{itemize}
+            \item The number of appearing documents
+            \item Overall number of appearances
+            \item For each document:
+            \begin{itemize}
+                \item Number of appearances
+                \item Location
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{Ranking-based search}
+    \begin{itemize}
+        \item Web search
+        \item Less frequent terms are more informative
+        \item NL input --- stop words, lemmatization
+        \item Vector-based representation of documents and queries (bag-of-words and dense embeddings)
+    \end{itemize}
+
+    \subsection{Vectors and documents}
+    \begin{itemize}
+        \item A word occurs in several documents
+        \item Both words and documents are vectors
+        \item A term-document matrix of dimensions $|V| \times |D|$
+        \item A sparse matrix
+        \item Word embedding
+    \end{itemize}
+
+    \subsection{Document similarity}
+    \begin{itemize}
+        \item Assumes orthogonal dimensions
+        \item Dot product of vectors
+        \[ \cos(\Theta) = \frac{A \dot B}{|A||B|} \]
+    \end{itemize}
+
+    \subsection{Importance of words}
+    \begin{itemize}
+        \item Frequencies of words in a particular document (and overall)
+        \item Inverse document frequency (IDF):
+        \[ \text{idf}_b = \log\left(\frac{N}{n_b}\right) \]
+        \begin{itemize}
+            \item $N$ --- number of documents in collection
+            \item $n_b$ --- number of documents with word $b$
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{Weighting dimensions}
+    \begin{itemize}
+        \item The weight of word $b$ in document $d$
+        \[ w_{b, d} = \text{tf}_{b, d} \times \text{idf}_{b, d} \]
+        \begin{itemize}
+            \item $\text{tf}_{b, d}$ --- frequency of term $b$ in document $d$
+        \end{itemize}
+        \item Called \textbf{TF{\_}IDF weighting}
+    \end{itemize}
+
+    \subsection{Performance measures for search}
+    \begin{itemize}
+        \item Statistical measures
+        \item Subjective measures
+        \item Precision, recall
+        \item A contingency table analysis of precision and recall
+    \end{itemize}
+
+        \subsubsection{Precision and recall}
+        \begin{itemize}
+            \item $N$ --- number of documents in the collection
+            \item $n$ --- number of inpportant documents for a given query $q$
+            \item Search returns $m$ documents, including $a$ relevant ones
+            \item \textbf{Precision:} $P = \frac{a}{m}$ --- the proportion of relevant documents in the obtained ones
+            \item \textbf{Recall:} $R = \frac{a}{n}$ --- the proportion of obtained relevant documents
+        \end{itemize}
+
+        \subsubsection{Other ranking measures}
+        \begin{itemize}
+            \item \textbf{Precision@k} --- the proportion of relevant documents in the first $k$ obtained ones
+            \item \textbf{Recall@k} --- the proportion of relevant documents in the $k$ obtained among all relevant documents
+            \item $F_{1}$@k
+            \item Mean reciprocal rank:
+            \[ MRR = \frac{1}{Q} \sum_{i=1}^{Q} \frac{1}{rank_i} \]
+            \begin{itemize}
+                \item Over $Q$ queries
+                \item Considers only the rank of the best answer
+            \end{itemize}
+        \end{itemize}
+
+    \subsection{PageRank}
+    \begin{itemize}
+        \item $p$ --- a web page
+        \item $O(p)$ --- pages pointed to by $p$
+        \item $I(p) = \{i_1, i_2, \ldots, i_n\}$ --- pages pointing to $p$
+        \item $d$ = damping factor between 0 and 1 (default 0.85 or 0.9)
+        \item $\pi(p)$ --- page quality, depends on the quality of pages pointing to it
+        \[ \pi(p) = (1 - d) + d \frac{\pi(i_1)}{|O(i_1)|} + \cdots + d \frac{\pi(i_n)}{|O(i_n)|} \]
+    \end{itemize}
+
+    \subsection{Dense vector embeddings}
+    \begin{itemize}
+        \item Advantages compared to sparse embeddings:
+        \begin{itemize}
+            \item Less dimensions, less space
+            \item Easier input for ML methods
+            \item Potential generalization and noise reduction
+            \item Potentially captures synonims
+        \end{itemize}
+        \item The most popular approaches:
+        \begin{itemize}
+            \item Matrix-based transformations to reduce dimensionality (SVD and LSA)
+            \item Neural embeddings (word2vec, Glove)
+            \item Contextual neural embeddings
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{The word2vec method}
+    \begin{itemize}
+        \item Instead of \textbf{counting} how often each word $w$ occurs near ``apricot'', train a classifier on a binary \textbf{prediction} task (is $w$ likely to show up near ``apricot''?)
+        \item Take the obtained (learned) classifier weights as the \textbf{word embeddings} (groups of similar words)
+    \end{itemize}
+
+    \subsection{Contextual embeddings}
+    \begin{itemize}
+        \item Also take context into account 
+        \item ELMo, BERT
+    \end{itemize}
+
+        \subsubsection{ELMo}
+        \begin{itemize}
+            \item Looks at the entire sentence before assigning each word in it an embedding
+            \item Predicts \textbf{the next word} in a sequence
+            \item Includes subword units
+        \end{itemize}
+
+        \subsubsection{BERT}
+        \begin{itemize}
+            \item Predicts \textbf{masked words} in a sentence
+            \item Also predicts the order of sentences
+        \end{itemize}
+
+    \subsection{Text summarization}
+    \begin{itemize}
+        \item Evaluation:
+        \begin{itemize}
+            \item ROUGE scores
+            \item BERTScore
+            \item with QA:\ question generation and searching for answers in the summary
+        \end{itemize}
+        \item Deep neural networks
+        \item Short and long texts
+    \end{itemize}
+
+    \subsection{Sentiment analysis (SA)}
+    \begin{itemize}
+        \item A computational study of opinions, sentiments, emotions and attitude expressed in texts towards an entity
+    \end{itemize}
+
     \newpage
 
 \section{Reinforcement learning}
