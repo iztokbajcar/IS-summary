@@ -1227,6 +1227,64 @@
     \newpage
 
 \section{Reinforcement learning}
+    \subsection{Procedural learning}
+    \begin{itemize}
+        \item Learning how to act to accomplish goals (given an environment that contains rewards, learn a policy for acting)
+        \item You have to try things in order to learn
+    \end{itemize}
+
+    \subsection{Agent}
+    \begin{itemize}
+        \item Temporally situated
+        \item Continuous learning and planning
+        \item Tries to affect the stochastic and uncertain environment
+    \end{itemize}
+
+    \subsection{Key features of reinforcement learning}
+    \begin{itemize}
+        \item The learner is not told which actions to take
+        \item Trial and error
+        \item The need to \textbf{explore} and \textbf{exploit}
+    \end{itemize}
+
+    \subsection{Components of RL}
+    Policy $\subset$ Reward $\subset$ Value $\subset$ Model of environment
+    \begin{itemize}
+        \item \textbf{Policy:} what to do?
+        \begin{itemize}
+            \item Defines the actions and choices
+            \item Represented with rules, tables, NNs, \ldots
+        \end{itemize}
+        \item \textbf{Reward:} what is good?
+        \begin{itemize}
+            \item Feedback from the environment
+        \end{itemize}
+        \item \textbf{Value:} an internal representation of what is good, it \textit{predicts} the reward
+        \begin{itemize}
+            \item The agent's expectation of what can be expected in a given state (long-term)
+            \item Implicitly contains evaluations of next states
+            \item Has to be learned
+        \end{itemize}
+        \item \textbf{Model:} what follows what
+        \begin{itemize}
+            \item An internal representation of the environment
+            \item Enables the agent to evaluate values and actions without performing them
+            \item Optional
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{Types of RL}
+    \begin{itemize}
+        \item Search-based: evolution directly on a policy
+        \item Model-based: build a model of the environment
+        \item Model-free: learn a policy without any models
+    \end{itemize}
+
+        \subsubsection{Types of model-free RL}
+        \begin{itemize}
+            \item Actor-critic learning
+            \item Q-learning
+        \end{itemize}
     \newpage
 
 \end{document}
